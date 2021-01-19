@@ -21,7 +21,7 @@
                 }
             });
 
-        document.querySelectorAll<HTMLDivElement>('div[aria-label=Actions for this post][role=button]')
+        document.querySelectorAll<HTMLDivElement>('div[aria-label="Actions for this post"][role=button]')
             .forEach(button => {
                 if (registerIsProcessed(button)) {
                     processAdMoreButton(button);
