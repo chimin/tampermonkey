@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 (() => {
-    setInterval(() => processPage(), 100);
+    setInterval(() => processPage(), 1000);
 
     const isProcesseds: unknown[] = [];
 
@@ -26,6 +26,11 @@
                 if (registerIsProcessed(button)) {
                     processAdMoreButton(button);
                 }
+            });
+
+        document.querySelectorAll<HTMLDivElement>('div[role=article]')
+            .forEach(div => {
+                processArticle(div);
             });
     }
 
@@ -107,6 +112,44 @@
                 (await waitUntil(() => document.querySelector<HTMLElement>('div[aria-label=Hide][role=button]'))).click();
 
                 (await waitUntil(() => document.querySelector<HTMLElement>('div[aria-label=Close][role=button]'))).click();
+            });
+            return button;
+        }
+    }
+
+    function processArticle(div: HTMLDivElement) {
+        if (div.querySelector('[data-send-to-eff]')) {
+            return;
+        }
+
+        const url = Array.from(div
+            .querySelectorAll<HTMLAnchorElement>('a[role=link]'))
+            .find(e => e.href.includes('/posts/') || e.href.includes('/permalink/') || e.href.includes('/permalink.php'))?.href;
+        if (!url) {
+            return;
+        }
+
+        div.style.position = 'relative';
+        div.appendChild(createSendToEffButton());
+
+        function createSendToEffButton() {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.innerText = 'Send to EFF';
+            button.style.position = 'absolute';
+            button.style.top = '15px';
+            button.style.right = '120px';
+            button.style.zIndex = '999999999';
+            button.setAttribute('data-send-to-eff', '');
+            button.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                const webSocket = new WebSocket('ws://localhost:3100');
+                webSocket.addEventListener('open', () => {
+                    webSocket.send(JSON.stringify({ url, body: div.outerHTML }));
+                    webSocket.close();
+                    button.innerText = 'Sent';
+                });
             });
             return button;
         }
