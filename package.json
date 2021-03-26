@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "buid": "webpack --prod",
+    "build": "webpack --mode production",
     "build:watch": "webpack --watch --devtool inline-source-map"
   },
   "devDependencies": {
