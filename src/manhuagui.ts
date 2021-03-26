@@ -51,11 +51,11 @@ function saveAppState(state: State) {
 }
 
 function like(title: string) {
-    updateAppState(state => ({ ...state, items: { ...state.items, [title]: 'LIKED' } }));
+    updateAppState(state => ({ ...state, items: { ...state?.items, [title]: 'LIKED' } }));
 }
 
 function show(title: string) {
-    updateAppState(state => ({ ...state, items: { ...state.items, [title]: undefined } }));
+    updateAppState(state => ({ ...state, items: { ...state?.items, [title]: undefined } }));
 }
 
 function hide(title: string) {
@@ -63,7 +63,7 @@ function hide(title: string) {
         if (state?.items?.[title] == 'LIKED' && !confirm(`Are you sure you want to hide ${title}?`)) {
             return state;
         }
-        return { ...state, items: { ...state.items, [title]: 'HIDDEN' } };
+        return { ...state, items: { ...state?.items, [title]: 'HIDDEN' } };
     });
 }
 

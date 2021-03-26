@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 (() => {
-    setInterval(() => processPage(), 1000);
+    setInterval(() => processPage(), 200);
 
     const isProcesseds: unknown[] = [];
 
@@ -118,7 +118,7 @@
     }
 
     function processArticle(div: HTMLDivElement) {
-        if (div.querySelector('[data-send-to-eff]')) {
+        if (div.querySelector('[data-send-to-eff]') || div.parentElement.closest('div[role=article]')) {
             return;
         }
 
